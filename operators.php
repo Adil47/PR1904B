@@ -73,16 +73,16 @@ define("IP","192.168.1.105");
 
 
 $marks=30;
-echo (($marks>=40)?"Pass":"Fail")
+$result=$marks>=40?"Pass":"Fail";
+echo $result;
 
-
-
-
-
-
-
-
-
+	
+	
+	
+	
+	
+	
+	
 ?>
 
 
