@@ -1,5 +1,4 @@
 <?php
-
 if(isset($_POST["submit"]))
 {
 	$incomeTax=0;
@@ -16,26 +15,15 @@ if(isset($_POST["submit"]))
 		$incomeTax=($salary/100*5);
 		$percentage="5%";
 	}
-	
 	echo "<ul>";
 	echo "<li>Salary = $salary</li>";
 	echo "<li>Tax Deduction ($percentage) = $incomeTax</li>";
 	echo "<li>Total Salary = ".($salary-$incomeTax)."</li>";
-	
 	echo "</ul>";
-	
-	
 }
-
-
-
-
 ?>
-
-
 <form action="conditions.php" method="post">
 Salary <input type="number" name="Salary"><br/>
 <input type="submit" name="submit" value="Submit">
-	
 </form>
 
