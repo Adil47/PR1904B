@@ -71,14 +71,31 @@
 //	$a=$a*$i;
 //}
 
-$f=4;
-$a=1;
-for($i=1;$i<$f;$i++,$a*=$i);
+//$f=4;
+//$a=1;
+//for($i=1;$i<$f;$i++,$a*=$i);
+//
+//echo "Factorial of $f = $a";
 
-echo "Factorial of $f = $a";
 
 
+$names=array("hamza","ali","malik","asad","waleed","zain","asad","waleed","zain","asad","waleed","zain");
 
+
+foreach(array_count_values( $names) as $key => $val)
+	{
+		echo "$key : $val<br>";
+	}
+
+//echo "Total Student : ".count($names)."<hr>";
+//
+//sort($names);
+//
+//	
+//	foreach($names as $name)
+//	{
+//		echo "$name<br>";
+//	}
 
 
 
