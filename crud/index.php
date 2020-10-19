@@ -13,18 +13,40 @@ if(isset($_POST["Submit"]))
 {
 	
 	
-	$Name=$_POST["Name"];
+	$Name=mysqli_real_escape_string($con,$_POST["Name"]) ;
 	$Phone=$_POST["Phone"];
 	$Email=$_POST["Email"];
 	$Password=$_POST["Password"];
 	$Gender=@$_POST["Gender"];
 	
+	
+	
+	$allowed = array('gif', 'png', 'jpg','');
+	$filename = $_FILES['imgFile']['name'];
+	$ext = pathinfo($filename, PATHINFO_EXTENSION);
+	
+	
+	// -------------  Image Uploading-------------------
 	if($_FILES["imgFile"]["size"]>1500000)
 	{
 		echo "<script>alert('file size must be lessthen or equal to 1.5 mb')</script>";
 	}
+	// ------ check file extension --------------------------
+	
+	elseif (!in_array($ext, $allowed)) {
+		?>
+			<div class="alert alert-danger alert-dismissible fade show" role="alert">
+			   this extension is not allowed, Allowed only 'gif', 'png', 'jpg' extensions
+			  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			  </button>
+			</div>
+		<?php
+		
+	}
 	else
 	{
+		
 		$imagePath="Uploads/StudentImages/".rand(1,999999).".png";
 		if(move_uploaded_file($_FILES["imgFile"]["tmp_name"],$imagePath))
 		{
@@ -32,11 +54,20 @@ if(isset($_POST["Submit"]))
 		}
 		else
 		{
-			$filePath="";
+			$imagePath="";
 		}
+		// ------------ Document Uploading --------------
+		$documentPath="Uploads/Documents/".rand(1,999999).$_FILES["documentFile"]["name"];
+		if(move_uploaded_file($_FILES["documentFile"]["tmp_name"],$documentPath))
+		{
 
-
-		$IsInsert=mysqli_query($con,"insert into student (Name,Phone,Email,Password,Gender,Image) values ('$Name','$Phone','$Email','$Password','$Gender','$imagePath')");
+		}
+		else
+		{
+			$documentPath="";
+		}
+		
+		$IsInsert=mysqli_query($con,"insert into student (Name,Phone,Email,Password,Gender,Image,Document) values ('$Name','$Phone','$Email','$Password','$Gender','$imagePath','$documentPath')") or die(mysqli_error($con));
 
 		if($IsInsert)
 		{
@@ -106,15 +137,33 @@ if(isset($_POST["Update"]))
 	{
 		$imagePath=$_POST["imgpath"];
 	}
-	
-	$isUpdate=mysqli_query($con,"update student set Name='$Name', Phone='$Phone', Email='$Email',Password='$Password', Gender='$Gender',Image='$imagePath' where StudentId='$id'");
+	// ------------ Document Uploading --------------
+		$documentPath="Uploads/Documents/".rand(1,999999).$_FILES["documentFile"]["name"];
+		if(move_uploaded_file($_FILES["documentFile"]["tmp_name"],$documentPath))
+		{
+
+		}
+		else
+		{
+			$documentPath=$_POST["documentpath"];
+		}
+	$isUpdate=mysqli_query($con,"update student set Name='$Name', Phone='$Phone', Email='$Email',Password='$Password', Gender='$Gender',Image='$imagePath',Document='$documentPath' where StudentId='$id'");
 	
 	
 	
 }
 
-
-
+//   ------------- delete Selected record -------------
+if(isset($_POST["deleteSelected"]))
+{
+	
+	foreach($_POST["ID"] as $key => $id)
+	{
+		mysqli_query($con,"delete from student where StudentId='$id' ");
+	}
+	
+	
+}
 
 
 
@@ -137,6 +186,8 @@ if(isset($_POST["Update"]))
 	
 		<input type="hidden" name="StudentId" value="<?php echo @$row[0]?>">
 		<input type="hidden" name="imgpath" value="<?php echo @$row[6]?>">
+		<input type="hidden" name="documentpath" value="<?php echo @$row[7]?>">
+		
 		
 		<tr>
 			<th><lebel>Name</lebel> </th>
@@ -169,6 +220,12 @@ if(isset($_POST["Update"]))
 				<input type="file" id="imgfile" name="imgFile" accept="image/*">
 			</td>
 		</tr>
+		<tr>
+			<th>Documant</th>
+			<td>
+				<input type="file"  name="documentFile" accept="application/*">
+			</td>
+		</tr>
 		
 		<tr>
 			<th></th>
@@ -189,6 +246,7 @@ if(isset($_POST["Update"]))
 
 <table class="table">
 	<tr>
+	<th>Select All <input type="checkbox" id="checkbox_select_all"></th>
 		<th>StudentId</th>
 		<th>Image</th>
 		<th>Name</th>
@@ -197,14 +255,19 @@ if(isset($_POST["Update"]))
 		<th>Email</th>
 		<th>Password</th>
 		<th>Gender</th>
+		<th>Document</th>
 		<th>Action</th>
 	</tr>
+	<form action="index.php" method="post" onSubmit="return confirm('Are sure do you want to delete selected records?????')">
+		<input type="submit" name="deleteSelected" value="Delete Selected record">
+	
 	<?php
 	$result=mysqli_query($con,"select * from student");
 	while($row=mysqli_fetch_array($result))
 	{
 		?>
 		<tr>
+		<td><input type="checkbox" name="ID[]" value="<?php echo $row[0] ?>"></td>
 			<td><?php echo $row["StudentId"] ?></td>
 			<td>
 				<img
@@ -217,6 +280,17 @@ if(isset($_POST["Update"]))
 			<td><?php echo $row["Password"] ?></td>
 			<td><?php echo $row["Gender"] ?></td>
 			<td>
+				<?php
+				if($row[7]!="")
+				{
+					?>
+					<a href="<?php echo $row[7]?>" download>download</a>
+					<?php
+				}
+				?>
+				
+			</td>
+			<td>
 				<a href="index.php?delete_id=<?php echo $row[0] ?>"><img src="Images/delete.png" width="25" alt=""></a>
 			<a href="index.php?edit_id=<?php echo $row[0] ?>"><img src="Images/edit.png" width="25" alt=""></a>
 			
@@ -228,7 +302,7 @@ if(isset($_POST["Update"]))
 	}
 	
 	?>
-			
+			</form>
 </table>
 </div>
 
@@ -259,6 +333,16 @@ document.getElementById('imgfile').onchange = function (evt) {
 
   
 }
+
+
+
+document.getElementById('checkbox_select_all').onclick = function() {
+  var checkboxes = document.getElementsByName('ID[]');
+  for (var checkbox of checkboxes) {
+    checkbox.checked = this.checked;
+  }
+}
+
 
 </script>
 
