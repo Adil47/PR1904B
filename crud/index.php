@@ -4,10 +4,26 @@
 
 
 <?php
+session_start();
 
+
+
+if(isset($_SESSION["Email"]) )
+{
+	
+}
+else
+{
+	header("Location:login.php");
+}
 //error_reporting(0);
 
-$con=mysqli_connect("localhost","root","","studentdb");
+include "connection.php";
+
+
+
+
+
 // ---------------  Insert record  --------------------
 if(isset($_POST["Submit"]))
 {
@@ -177,6 +193,11 @@ if(isset($_POST["deleteSelected"]))
 
 
 ?>
+<center><h1 style="color: orange">Welcome : <?php echo $_SESSION["Email"] ?></h1></center>
+<form action="login.php" method="post" style="float: right; margin-top: -40px;margin-right: 10px">
+	<input type="hidden" name="logout" value="logout">
+	<input type="image" src="Images/logout.jpg" width="40">
+</form>
 <div class="container-fluid">
 	<br>
 	<br>
