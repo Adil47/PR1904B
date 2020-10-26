@@ -30,6 +30,7 @@ if(isset($_POST["Submit"]))
 	
 	
 	$Name=mysqli_real_escape_string($con,$_POST["Name"]) ;
+	$Name=strip_tags($Name);
 	$Phone=$_POST["Phone"];
 	$Email=$_POST["Email"];
 	$Password=$_POST["Password"];

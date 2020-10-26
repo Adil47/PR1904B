@@ -19,15 +19,29 @@ include "connection.php";
 if(isset($_POST["login"]))
 {
 	
-	$email=$_POST["Email"];
-	$password=$_POST["Password"];
+	$email=mysqli_real_escape_string($con,$_POST["Email"]);
+	$password=mysqli_real_escape_string($con,$_POST["Password"]);
 	
 	$query=mysqli_query($con,"select * from Student where Email='$email' and Password='$password'");
 	
 	if($query=mysqli_fetch_array($query))
 	{
 		$_SESSION["Email"]=$email;
-		
+		if(isset($_POST["rememberme"]))
+		{
+			setcookie("Email",$email,time()+(3600*24));
+			setcookie("Password",$password,time()+(3600*24));
+			setcookie("Remember","checked",time()+(3600*24));
+			
+			
+		}
+		else
+		{
+			setcookie("Email",$email,time()-3600);
+			setcookie("Password",$password,time()-3600);
+			setcookie("Remember","",time()-3600);
+			
+		}
 		header("Location:index.php");
 	}
 	else
@@ -82,15 +96,18 @@ if(isset($_POST["login"]))
 				<form action="login.php" method="post" class="login100-form validate-form p-b-33 p-t-5">
 					<center><p style="color:red"><?php echo @$msg ?></p></center>
 					<div class="wrap-input100 validate-input" data-validate = "Enter username">
-						<input class="input100" type="text" name="Email" placeholder="Email">
+						<input class="input100" type="text" name="Email" value="<?php echo @$_COOKIE['Email']?>" placeholder="Email">
 						<span class="focus-input100" data-placeholder="&#xe82a;"></span>
 					</div>
 
 					<div class="wrap-input100 validate-input" data-validate="Enter password">
-						<input class="input100" type="password" name="Password" placeholder="Password">
+						<input class="input100" type="password" value="<?php echo @$_COOKIE['Password']?>" name="Password" placeholder="Password">
 						<span class="focus-input100" data-placeholder="&#xe80f;"></span>
 					</div>
-
+					<div class="wrap-input100 validate-input" data-validate="Enter password">
+						<input type="checkbox" name="rememberme" <?php echo @$_COOKIE['Remember']?> > Remember Me
+						
+					</div>
 					<div class="container-login100-form-btn m-t-32">
 						<button type="submit" name="login" class="login100-form-btn">
 							Login
