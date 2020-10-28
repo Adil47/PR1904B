@@ -103,7 +103,7 @@ if(isset($_POST["Submit"]))
 if(isset($_GET["delete_id"]))
 {
 	$id=$_GET["delete_id"];
-	$isDelete=mysqli_query($con,"delete from student where StudentId='$id' ");
+	$isDelete=mysqli_query($con,"delete from student where StudentId='$id' ") ;
 	if($isDelete)
 	{
 		?>
@@ -131,7 +131,7 @@ if(isset($_GET["delete_id"]))
 if(isset($_GET["edit_id"]))
 {
 	$id=$_GET["edit_id"];
-	$result=mysqli_query($con,"select * from student where StudentId='$id'");
+	$result=mysqli_query($con,"select * from student where StudentId='$id'") or die(mysqli_error($con));
 	$row=mysqli_fetch_array($result);
 	
 }
