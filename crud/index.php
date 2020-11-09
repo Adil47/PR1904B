@@ -6,6 +6,7 @@
 <?php
 session_start();
 
+error_reporting(0);
 
 
 if(isset($_SESSION["Email"]) )
@@ -32,7 +33,7 @@ if(isset($_POST["Submit"]))
 	$Name=mysqli_real_escape_string($con,$_POST["Name"]) ;
 	$Name=strip_tags($Name);
 	$Phone=$_POST["Phone"];
-	$Email=$_POST["Email"];
+	$Email=encrypt($_POST["Email"]);
 	$Password=$_POST["Password"];
 	$Gender=@$_POST["Gender"];
 	
@@ -191,8 +192,23 @@ if(isset($_POST["deleteSelected"]))
 
 
 
+function decryption($encMsg)
+{
+	
+	$secret_key=sodium_hex2bin('f2d1c17b484619e2c8623102701922b3ecec0da15bb518bf3416ae5ff10d31ba');
+	$nonce=sodium_hex2bin('605abb921dec83ea55aed6081933996a63093e3ee948345e');
+	$encrypted_message=sodium_hex2bin($encMsg);
+	$decrypted_message =sodium_crypto_secretbox_open($encrypted_message, $nonce, $secret_key);
 
-
+	return $decrypted_message;
+}
+function encrypt($message)
+{
+	$secret_key=sodium_hex2bin('f2d1c17b484619e2c8623102701922b3ecec0da15bb518bf3416ae5ff10d31ba');
+	$nonce=sodium_hex2bin('605abb921dec83ea55aed6081933996a63093e3ee948345e');
+	$encrypted_message = sodium_crypto_secretbox($message,$nonce, $secret_key);
+	return sodium_bin2hex($encrypted_message);
+}
 ?>
 <center><h1 style="color: orange">Welcome : <?php echo $_SESSION["Email"] ?></h1></center>
 <form action="login.php" method="post" style="float: right; margin-top: -40px;margin-right: 10px">
@@ -298,7 +314,7 @@ if(isset($_POST["deleteSelected"]))
 			</td>
 			<td><?php echo $row["Name"] ?></td>
 			<td><?php echo $row["Phone"] ?></td>
-			<td><?php echo $row["Email"] ?></td>
+			<td><?php echo $row["Email"]?></td>
 			<td><?php echo $row["Password"] ?></td>
 			<td><?php echo $row["Gender"] ?></td>
 			<td>
