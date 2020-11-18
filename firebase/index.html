@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Untitled Document</title>
+<script src="https://www.gstatic.com/firebasejs/8.0.2/firebase-app.js"></script>
+ <script src="https://www.gstatic.com/firebasejs/8.0.2/firebase-database.js"></script>
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+
+<script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyB4IZe2t105tbF0Rvft4rUlvTUgsvrn9ss",
+    authDomain: "aptech-7a8c1.firebaseapp.com",
+    databaseURL: "https://aptech-7a8c1.firebaseio.com",
+    projectId: "aptech-7a8c1",
+    storageBucket: "aptech-7a8c1.appspot.com",
+    messagingSenderId: "937621535512",
+    appId: "1:937621535512:web:8e95fe7d2b830458793c6d"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+	
+	var database = firebase.database();
+	
+	
+	function insertStudent()
+	{
+		var name=document.getElementById("Name").value;
+		var phone=document.getElementById("Phone").value;
+		var email=document.getElementById("Email").value;
+		
+		var obj={Name:name,Phone:phone,Email:email};
+		
+		database.ref("Students").push(obj);
+		
+		
+	}
+	
+	
+	// ---------- fetch record on added
+	
+	database.ref("Students")
+		.on('child_added', function(data) {
+		document.getElementById('tbody').innerHTML+="<tr id='"+data.key+"' ><td>"+data.key+"</td><td>"+data.val().Name+"</td><td>"+data.val().Phone+"</td><td>"+data.val().Email+"</td></tr>";
+		
+		});
+	// ---------- fetch record on delete
+	
+	database.ref("Students")
+		.on('child_removed', function(data) {
+	
+		
+		document.getElementById(data.key).style.display="none";	
+		
+		});
+	
+	
+	
+	function removeStudent()
+	{
+		var key=document.getElementById("key").value;
+		database.ref("Students/"+key).remove();
+	}
+	
+	
+	
+	
+</script>
+
+
+
+
+
+</head>
+
+<body>
+
+<input type="text" id="Name" placeholder="name"><br>
+<input type="text" id="Phone" placeholder="phone"><br>
+<input type="text" id="Email" placeholder="email"><br>
+
+
+<button onClick="insertStudent()">insert </button>
+<hr>
+
+<input type="text" placeholder="enter key" id="key">
+<button onClick="removeStudent()">Delete</button>
+
+
+<table border="1">
+<tr>
+	<th>Id</th>
+	<th>Name</th>
+	<th>Phone</th>
+	<th>Email</th>
+	
+</tr>
+
+<tbody id="tbody">
+	
+</tbody>
+	
+</table>
+
+
+
+
+</body>
+</html>
