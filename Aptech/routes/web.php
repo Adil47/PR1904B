@@ -27,10 +27,14 @@ Route::get("/hello",function(){
 
 //   Routs for Students
 
-Route::get("Students/index","StudentController@index");
+Route::get("Students","StudentController@index");
 Route::get("Students/create","StudentController@create");
 
 Route::post("Students/submit","StudentController@submit");
+Route::get("Students/delete","StudentController@delete");
+Route::get("Students/edit","StudentController@edit");
+
+Route::post("Students/update","StudentController@update");
 
 
 
