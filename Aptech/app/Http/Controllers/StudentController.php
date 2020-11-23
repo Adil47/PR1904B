@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
+use App\Models\Teacher;
 
 class StudentController extends Controller
 {
@@ -25,7 +26,8 @@ class StudentController extends Controller
 
 	public function create()
 	{
-		return view('Student.create');
+		$teachers=Teacher::get();
+		return view('Student.create')->with('teachers',$teachers);
 	}
 
 	public function submit(Request $req)
@@ -36,6 +38,8 @@ class StudentController extends Controller
 		$std->Phone=$req->Phone;
 		$std->Email=$req->Email;
 		$std->Password=$req->Password;
+		$std->TeacherId=$req->TeacherId;
+
 		if($req->imgFile)
 		{
 			$imgPath=$req->imgFile->store('uploads','public');
@@ -67,9 +71,12 @@ class StudentController extends Controller
 	public function edit(Request $req)
 	{
 		$std=Student::where(["StudentId"=>$req->id])->first();
+		$teachers=Teacher::get();
 
-
-		return view('Student.update')->with("std",$std);
+		return view('Student.update')
+		->with("std",$std)
+		->with("teachers",$teachers)
+		;
 	}
 
 	public function update(Request $req)
@@ -79,6 +86,7 @@ class StudentController extends Controller
 					"Name"=>$req->Name,
 					"Phone"=>$req->Phone,
 					"Email"=>$req->Email,
+					"TeacherId"=>$req->TeacherId
 
 				]);
 

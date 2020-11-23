@@ -4,18 +4,16 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Teacher;
 
-class Student extends Model
+class Teacher extends Model
 {
     use HasFactory;
 
 
-    public function Teacher()
+    public function Students()
     {
-    	return $this->hasOne("App\Models\Teacher","TeacherId","TeacherId");
+    	return $this->hasMany("App\Models\Student","TeacherId","TeacherId");
     }
-
 
 
 }

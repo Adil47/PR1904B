@@ -40,7 +40,9 @@ Route::post("Students/update","StudentController@update");
 
 
 
-
+Route::get("Teachers","TeacherController@index");
+Route::get("Teachers/create","TeacherController@create");
+Route::post("Teachers/submit","TeacherController@submit");
 
 
 

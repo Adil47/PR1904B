@@ -14,6 +14,14 @@ Name <input type="text" name="Name"><br>
 Phone <input type="text" name="Phone"><br>
 Email <input type="text" name="Email"><br>
 Password <input type="text" name="Password"><br>
+Select Teacher
+<select name="TeacherId">
+
+    @foreach($teachers as $t)
+        <option value="{{$t->TeacherId}}" >{{$t->Name}}</option>
+    @endforeach
+</select>
+<br>
 <img src="" id="outImage" style="max-width:150px" >
 <input type="file" name="imgFile" id="picField" accept="image/*"><br>
 
